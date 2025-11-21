@@ -1,0 +1,446 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>LOKI Project Reproduction</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        /* 全局重置 */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #fff;
+            overflow-x: hidden;
+        }
+
+        /* --- Hero 区域 (渐变背景部分) --- */
+        .hero-section {
+            /* 核心：还原背景渐变色 (深蓝 -> 紫 -> 橙粉) */
+            background: linear-gradient(110deg, #050a6e 0%, #291a85 30%, #b35d96 70%, #fcae63 100%);
+            color: white;
+            padding: 60px 20px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 80vh;
+        }
+
+        .container {
+            max-width: 1200px;
+            width: 100%;
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: space-between;
+            align-items: flex-start;
+            gap: 40px;
+        }
+
+        /* 左侧文本区域 */
+        .text-content {
+            flex: 1;
+            min-width: 300px;
+        }
+
+        h1.project-title {
+            font-size: 5rem;
+            font-weight: 800;
+            text-transform: uppercase;
+            margin-bottom: 10px;
+            /* 标题渐变色 (青色 -> 蓝色) */
+            background: linear-gradient(to right, #00f2ff, #0099ff);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            line-height: 1;
+        }
+
+        h2.subtitle {
+            font-size: 2rem;
+            font-weight: 700;
+            color: #ffcc00; /* 黄色高亮 */
+            margin-bottom: 20px;
+            line-height: 1.3;
+        }
+
+        .authors {
+            font-size: 1rem;
+            line-height: 1.6;
+            margin-bottom: 15px;
+        }
+
+        .authors span {
+            display: inline-block;
+        }
+
+        .authors sup {
+            color: #ddd;
+            margin-left: 2px;
+        }
+
+        .affiliations {
+            font-size: 0.9rem;
+            color: #e0e0e0;
+            margin-bottom: 10px;
+            font-style: italic;
+        }
+
+        .footnotes {
+            font-size: 0.85rem;
+            color: #ccc;
+            margin-bottom: 30px;
+        }
+
+        /* 按钮组 */
+        .button-group {
+            display: flex;
+            gap: 15px;
+            flex-wrap: wrap;
+        }
+
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            background-color: #ffeebb; /* 浅黄色背景 */
+            color: #000;
+            padding: 10px 20px;
+            border-radius: 50px;
+            text-decoration: none;
+            font-weight: 700;
+            font-size: 0.95rem;
+            transition: transform 0.2s;
+        }
+
+        .btn:hover {
+            transform: scale(1.05);
+            background-color: #fff;
+        }
+
+        .btn i {
+            margin-right: 8px;
+        }
+
+        /* 右侧图片区域 */
+        .image-content {
+            flex: 0 0 400px; /* 固定宽度 */
+            text-align: center;
+        }
+
+        .loki-poster {
+            width: 100%;
+            max-width: 400px;
+            aspect-ratio: 1 / 1;
+            background-color: #111; /* 占位黑色背景 */
+            border-radius: 5px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+            /* 这里为了演示，使用了CSS模拟海报结构，实际请替换为 <img src="..."> */
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        /* 模拟海报内容的简单的CSS绘制 */
+        .loki-poster::before {
+            content: 'LOKI';
+            color: white;
+            font-size: 4rem;
+            font-weight: bold;
+            z-index: 2;
+        }
+        .loki-poster::after {
+            content: 'LIES · TRUTH · TRUTH';
+            color: white;
+            font-size: 1rem;
+            margin-top: 20px;
+            z-index: 2;
+        }
+
+        .generated-caption {
+            margin-top: 10px;
+            font-size: 0.9rem;
+            color: rgba(255,255,255,0.8);
+        }
+
+
+
+
+/* --- Logo 条区域 (滚动版) --- */
+        .logo-bar {
+            background-color: #f5f5f7;
+            padding: 20px 0;
+            border-bottom: 1px solid #ddd;
+            overflow: hidden; /* 隐藏溢出的内容 */
+            width: 100%;
+            position: relative;
+        }
+
+        .marquee-track {
+            display: flex;
+            width: max-content; /* 让宽度根据内容自适应 */
+            /* 动画解析:
+               scroll-left: 动画名称
+               30s: 滚动一圈的时间 (数字越小越快)
+               linear: 匀速运动
+               infinite: 无限循环
+            */
+            animation: scroll-left 30s linear infinite;
+        }
+
+        /* 鼠标悬停时暂停滚动 (可选，增加交互体验) */
+        .marquee-track:hover {
+            animation-play-state: paused;
+        }
+
+        .partner-logo {
+            height: 35px; /* 统一控制图片高度 */
+            width: auto;  /* 宽度按比例缩放 */
+            margin: 0 30px; /* 图片之间的间距 */
+            filter: grayscale(100%); /* 可选：默认黑白，看起来更整洁 */
+            opacity: 0.6; /* 可选：稍微透明一点 */
+            transition: all 0.3s ease;
+        }
+
+        /* 鼠标悬停在某个 Logo 上时，恢复彩色并高亮 */
+        .partner-logo:hover {
+            filter: grayscale(0%);
+            opacity: 1;
+            transform: scale(1.1);
+        }
+
+        /* 定义动画关键帧 */
+        @keyframes scroll-left {
+            0% {
+                transform: translateX(0);
+            }
+            100% {
+                /* 向左移动 50%。
+                   因为我们在 HTML 里把图片复制了一份，
+                   所以移动总宽度的 50% 正好是移动完“第一组”的距离。
+                   此时画面与 0% 时完全一致，从而实现无缝重置。
+                */
+                transform: translateX(-50%);
+            }
+        }
+
+
+        /* --- 底部拼贴画区域 --- */
+        .collage-section {
+            text-align: center;
+            padding: 40px 20px;
+        }
+        
+        .collage-placeholder {
+            max-width: 1000px;
+            height: 300px;
+            margin: 0 auto;
+            background: #eee;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #999;
+            border: 2px dashed #ccc;
+        }
+
+        /* 响应式调整 */
+        @media (max-width: 768px) {
+            .hero-section {
+                flex-direction: column;
+            }
+            
+            .image-content {
+                flex: 1;
+                width: 100%;
+                margin-top: 40px;
+            }
+
+            h1.project-title {
+                font-size: 3.5rem;
+            }
+
+            h2.subtitle {
+                font-size: 1.5rem;
+            }
+        }
+
+        /* --- 新增内容区域样式 --- */
+        .main-content {
+            max-width: 1000px;
+            margin: 0 auto;
+            padding: 40px 20px;
+            color: #333;
+            line-height: 1.6;
+        }
+
+        /* 图片通用样式 */
+        .full-width-img {
+            width: 100%;
+            height: auto;
+            display: block;
+            margin-bottom: 30px;
+            border-radius: 8px;
+            /* 如果图片是透明底，可以加个浅色背景，视情况而定 */
+        }
+
+        /* 特性列表 (Bullet Points) */
+        .features-list {
+            font-size: 1rem;
+            margin-bottom: 50px;
+        }
+
+        .features-list ul {
+            list-style: none; /* 去掉默认圆点 */
+            padding-left: 0;
+        }
+
+        .features-list li {
+            margin-bottom: 15px;
+            padding-left: 20px;
+            position: relative;
+        }
+
+        /* 自定义圆点 */
+        .features-list li::before {
+            content: "•";
+            position: absolute;
+            left: 0;
+            color: #333;
+            font-weight: bold;
+        }
+
+        /* 关键词颜色高亮 (仿照原图配色) */
+        .highlight-video { color: #f0ad4e; font-weight: 600; }
+        .highlight-image { color: #5bc0de; font-weight: 600; }
+        .highlight-3d { color: #5cb85c; font-weight: 600; }
+        .highlight-text { color: #a020f0; font-weight: 600; } /* 紫色 */
+        .highlight-audio { color: #d9534f; font-weight: 600; }
+
+        /* 摘要部分 */
+        .abstract-section {
+            border-top: 1px solid #eee;
+            padding-top: 30px;
+        }
+
+        .abstract-section h2 {
+            font-size: 1.8rem;
+            margin-bottom: 20px;
+            color: #222;
+        }
+
+        .abstract-section p {
+            text-align: justify; /* 两端对齐 */
+            font-size: 1rem;
+            color: #444;
+        }
+    </style>
+</head>
+<body>
+
+    <section class="hero-section">
+        <div class="container">
+            <div class="text-content">
+                <h1 class="project-title">SHINE</h1>
+                <h2 class="subtitle">Your Travel Planning Agent</h2>
+                
+                <div class="authors">
+                    <strong>Authors:</strong> Zihao Guo<sup>1
+                </div>
+
+                <div class="affiliations">
+                    <strong>Affiliations:</strong> <sup>1</sup>Jiangnan University
+                </div>
+
+                <div class="footnotes">
+                    * Equal Contribution, † Corresponding Authors
+                </div>
+
+                <div class="button-group">
+                    <a href="#" class="btn"><i class="fa-solid fa-file-pdf"></i> ArXiv</a>
+                    <a href="#" class="btn"><i class="fa-solid fa-database"></i> Dataset</a>
+                    <a href="#" class="btn"><i class="fa-brands fa-github"></i> Code</a>
+                    <a href="#" class="btn"><i class="fa-solid fa-comment-dots"></i> Quiz</a>
+                </div>
+            </div>
+
+            <div class="image-content">
+                <div class="loki-poster">
+                    <div style="font-size:50px; margin-bottom:10px;">👁️</div>
+                </div>
+                <div class="generated-caption">Caption</div>
+            </div>
+        </div>
+    </section>
+
+<div class="logo-bar">
+        <div class="marquee-track">
+            <img src="./icons/DeepSeek.png" alt="DeepSeek" class="partner-logo">
+            <img src="./icons/GLM.png" alt="GLM" class="partner-logo">
+            <img src="./icons/Llama.png" alt="Llama" class="partner-logo">
+            <img src="./icons/Mistral.png" alt="Mistral" class="partner-logo">
+            <img src="./icons/DeepSeek.png" alt="DeepSeek" class="partner-logo">
+            <img src="./icons/GLM.png" alt="GLM" class="partner-logo">
+            <img src="./icons/Llama.png" alt="Llama" class="partner-logo">
+            <img src="./icons/Mistral.png" alt="Mistral" class="partner-logo">
+            <img src="./icons/DeepSeek.png" alt="DeepSeek" class="partner-logo">
+            <img src="./icons/GLM.png" alt="GLM" class="partner-logo">
+            <img src="./icons/Llama.png" alt="Llama" class="partner-logo">
+            <img src="./icons/Mistral.png" alt="Mistral" class="partner-logo">
+            <img src="./icons/DeepSeek.png" alt="DeepSeek" class="partner-logo">
+            <img src="./icons/GLM.png" alt="GLM" class="partner-logo">
+            <img src="./icons/Llama.png" alt="Llama" class="partner-logo">
+            <img src="./icons/Mistral.png" alt="Mistral" class="partner-logo">
+            <img src="./icons/DeepSeek.png" alt="DeepSeek" class="partner-logo">
+            <img src="./icons/GLM.png" alt="GLM" class="partner-logo">
+            <img src="./icons/Llama.png" alt="Llama" class="partner-logo">
+            <img src="./icons/Mistral.png" alt="Mistral" class="partner-logo">
+
+
+        </div>
+    </div>
+
+
+<section class="main-content">
+        
+        <img src="./images/Figure1.png" alt="LOKI Collage" class="full-width-img">
+
+        <img src="./images/Figure2.png" alt="LOKI Framework" class="full-width-img">
+
+        <div class="features-list">
+            <ul>
+                <li>
+                    <!-- <strong>Diverse modalities:</strong> Our dataset includes high-quality multimodal data generated by recent popular synthetic models, covering  -->
+                    <!-- <span class="highlight-video">video</span>,  -->
+                    <!-- <span class="highlight-image">image</span>,  -->
+                    <!-- <span class="highlight-3d">3D</span>,  -->
+                    <!-- <span class="highlight-text">text</span>,  -->
+                    <!-- <span class="highlight-audio">audio</span>. -->
+                </li>
+                <li>
+                    <!-- <strong>Heterogeneous category:</strong> Our collected dataset includes <strong>26</strong> detailed categories across different modalities, such as specialized 🛰️ satellite and ❤️ medical images; text like 📜 philosophy and 📜 ancient chinese; and <span class="highlight-audio">audio</span> data like 🎤 singing voice, 💿 environmental sound and 🎸 music. -->
+                </li>
+                <li>
+                    <!-- <strong>Multi-level tasks:</strong> LOKI includes basic "Synthetic or Real" labels, suitable for fundamental question settings ☑️ like true/false and 🔠 multiple-choice questions. It also incorporates fine-grained anomalies for inferential explanations, enabling tasks like 🖼️ abnormal detail selection and 🌍 abnormal explanation, to explore LMMs' capabilities in explainable synthetic data detection. -->
+                </li>
+                <li>
+                    <!-- <strong>Multimodal synthetic data evaluation framework:</strong> We propose a comprehensive evaluation framework that supports inputs of various data formats and over <strong>25</strong> mainstream multimodal models. -->
+                </li>
+            </ul>
+        </div>
+
+        <div class="abstract-section">
+            <h2>Abstract</h2>
+            <p>
+                The recent surge in large language model capabilities—particularly in chain-of-thought reasoning and API-based tool invocation—has enabled the emergence of language agents capable of autonomous decision-making in real-world scenarios. Travel planning stands out as a particularly challenging yet practical testbed for such agents, as it inherently requires multi-objective optimization under dynamic constraints while addressing genuine user needs in a commercially viable domain. However, pure LLM-based planning methods often exhibit suboptimal performance in this domain. To address this challenge, we present SHINE, a hybrid approach that decouples natural language understanding from combinatorial search.
+            </p>
+        </div>
+
+    </section>
+
+</body>
+</html>

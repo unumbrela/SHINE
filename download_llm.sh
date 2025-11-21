@@ -1,0 +1,2 @@
+modelscope download --model Qwen/Qwen3-4B --local_dir chinatravel/local_llm/Qwen3-4B
+modelscope download --model LLM-Research/Llama-3.2-3B-Instruct --local_dir chinatravel/local_llm/Llama-3.2-3B-Instruct

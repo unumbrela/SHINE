@@ -1,0 +1,3 @@
+1 替换掉tpc_agent 文件夹的内容
+此时运行会报错，FileNotFoundError: [Errno 2] No such file or directory: '/home/zihao/LLM/ChinaTravel/chinatravel/evaluation/default_splits/tpc_phase_2_online_test.txt'
+需要将tpc_phase_2_online_test.txt放到对应位置
